@@ -2,6 +2,9 @@ package com.andi.app.webservice.wsrestassuredtest;
 
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
 
@@ -12,6 +15,7 @@ import java.util.Map;
 
 import static io.restassured.RestAssured.given;
 import static junit.framework.TestCase.assertNotNull;
+import static junit.framework.TestCase.assertTrue;
 
 public class TestCreateUser {
 
@@ -20,7 +24,7 @@ public class TestCreateUser {
     @BeforeEach
     void setUp() throws Exception {
         RestAssured.baseURI = "http://localhost";
-        RestAssured.port = 8888;
+        RestAssured.port = 8080;
     }
 
     @Test
@@ -40,7 +44,7 @@ public class TestCreateUser {
         Map<String, Object> userDetails = new HashMap<>();
         userDetails.put("firstName", "Andi");
         userDetails.put("lastName", "Mayer");
-        userDetails.put("email", "tstemail@test.com");
+        userDetails.put("email", "testemail@test.com");
         userDetails.put("password", "112");
         userDetails.put("addresses", userAddresses);
 
@@ -58,5 +62,22 @@ public class TestCreateUser {
 
         String userId = response.jsonPath().get("userId");
         assertNotNull(userId);
+        assertTrue(userId.length() == 30);
+
+        String bodyString = response.getBody().asString();
+        try {
+            JSONObject responseBodyJson = new JSONObject(bodyString);
+            JSONArray addresses = responseBodyJson.getJSONArray("addresses");
+
+            assertNotNull(addresses);
+            assertTrue(addresses.length() == 1);
+
+            String addressId = addresses.getJSONObject(0).getString("addressId");
+            assertNotNull(addressId);
+            assertTrue(addressId.length() == 30);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 }
