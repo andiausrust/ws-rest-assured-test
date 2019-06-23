@@ -1,4 +1,4 @@
-# Rest Assured POC
+# Automated Testing with Rest Assured - POC
 
 ## example test method rest assured:  
 
