@@ -20,11 +20,12 @@ import static junit.framework.TestCase.assertTrue;
 public class TestCreateUser {
 
     private final String CONTEXT_PATH = "/webservices";
+    private final int PORT = 8888;
 
     @BeforeEach
     void setUp() throws Exception {
         RestAssured.baseURI = "http://localhost";
-        RestAssured.port = 8080;
+        RestAssured.port = 8888;
     }
 
     @Test
@@ -49,6 +50,7 @@ public class TestCreateUser {
         userDetails.put("addresses", userAddresses);
 
         Response response = given()
+                .port(PORT)
                 .contentType("application/json")
                 .accept("application/json")
                 .body(userDetails)
